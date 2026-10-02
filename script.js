@@ -1,5 +1,7 @@
+// ⚠️ ใส่ Web App URL จาก Google Apps Script
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyYu4b9c-ORJYTSBLfSF0xbO0dFtAPL1g_lN2TdJKqunww9CIoFHJF9gyQUsKmdZLGz/exec";
 
+// โหลดเมนูไฮไลท์หน้าแรก (index.html)
 function loadIndexMenu() {
   fetch("products.json")
     .then(res => res.json())
@@ -8,16 +10,18 @@ function loadIndexMenu() {
       if(!container) return;
       container.innerHTML = data.map(item => `
         <div class="card">
-          <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/250x180'">
+          <img src="${item.image}" alt="${item.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/250x180?text=${encodeURIComponent(item.name)}';">
           <h3>${item.name}</h3>
           <p>${item.description}</p>
           <div class="price">${item.price} บาท</div>
           <a href="product.html?id=${item.id}" class="btn">สั่งเลือกระดับความแซ่บ 🌶️</a>
         </div>
       `).join('');
-    });
+    })
+    .catch(err => console.error("Error loading products:", err));
 }
 
+// โหลดรายละเอียดเมนูและตัวเลือก (product.html)
 function loadProductDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const productId = parseInt(urlParams.get('id')) || 1;
@@ -28,40 +32,55 @@ function loadProductDetail() {
       const item = products.find(p => p.id === productId);
       if(!item) return;
 
-      document.getElementById("p-image").src = item.image;
+      const imgElem = document.getElementById("p-image");
+      imgElem.src = item.image;
+      imgElem.onerror = function() {
+        this.src = `https://via.placeholder.com/500x300?text=${encodeURIComponent(item.name)}`;
+      };
+
       document.getElementById("p-name").innerText = item.name;
       document.getElementById("p-desc").innerText = item.description;
       document.getElementById("p-price").innerText = item.price;
 
+      // ตัวเลือกระดับความเผ็ด 3 ระดับ
       document.getElementById("p-spicy").innerHTML = item.spicyLevels.map(s => `<option value="${s}">${s}</option>`).join('');
+      
+      // ตัวเลือกเส้น
       document.getElementById("p-noodle").innerHTML = item.noodleTypes.map(n => `<option value="${n}">${n}</option>`).join('');
-      document.getElementById("p-toppings").innerHTML = item.toppings.map((t) => `
-        <label><input type="checkbox" class="topping-cb" value="${t.name}" data-price="${t.price}"> ${t.name} (+${t.price} บ.)</label><br>
+      
+      // ท็อปปิ้งพิเศษ (หอยเชอร์รี่, กากหมู)
+      document.getElementById("p-toppings").innerHTML = item.toppings.map(t => `
+        <label style="display:block; margin: 8px 0; font-size: 1rem;">
+          <input type="checkbox" class="topping-cb" value="${t.name}" data-price="${t.price}"> 
+          ${t.name} (+${t.price} บาท)
+        </label>
       `).join('');
 
       document.getElementById("add-to-cart-btn").onclick = () => addToCart(item);
-    });
+    })
+    .catch(err => console.error("Error loading product detail:", err));
 }
 
+// เพิ่มสินค้าลงตะกร้า
 function addToCart(item) {
   const spicy = document.getElementById("p-spicy").value;
   const noodle = document.getElementById("p-noodle").value;
   
   let extraPrice = 0;
   let selectedToppings = [];
+  
   document.querySelectorAll('.topping-cb:checked').forEach(cb => {
     selectedToppings.push(cb.value);
     extraPrice += parseInt(cb.getAttribute('data-price'));
   });
 
   if(noodle.includes("+10")) extraPrice += 10;
-  if(noodle.includes("+15")) extraPrice += 15;
 
   const orderItem = {
     name: item.name,
     spicy: spicy,
     noodle: noodle,
-    toppings: selectedToppings.join(', ') || 'ไม่มี',
+    toppings: selectedToppings.length > 0 ? selectedToppings.join(', ') : 'ไม่ใส่ท็อปปิ้งเพิ่ม',
     totalPrice: item.price + extraPrice
   };
 
@@ -73,6 +92,7 @@ function addToCart(item) {
   window.location.href = "order.html";
 }
 
+// สรุปออเดอร์หน้าสั่งซื้อ (order.html)
 function loadOrderSummary() {
   const cart = JSON.parse(localStorage.getItem("cart") || "[]");
   const listContainer = document.getElementById("cart-items");
@@ -86,26 +106,34 @@ function loadOrderSummary() {
   let total = 0;
   listContainer.innerHTML = cart.map((item, i) => {
     total += item.totalPrice;
-    return `<div>${i+1}. <b>${item.name}</b> [${item.spicy}] - ${item.noodle} (ท็อปปิ้ง: ${item.toppings}) = ${item.totalPrice} บาท</div><hr>`;
+    return `
+      <div style="padding:10px 0; border-bottom:1px solid #eee;">
+        <b>${i+1}. ${item.name}</b><br>
+        <small>ระดับความเผ็ด: ${item.spicy} | เส้น: ${item.noodle}</small><br>
+        <small>ท็อปปิ้ง: ${item.toppings}</small><br>
+        <span style="color:#e67e22; font-weight:bold;">ราคา: ${item.totalPrice} บาท</span>
+      </div>
+    `;
   }).join('');
 
   document.getElementById("grand-total").innerText = total;
 }
 
+// ส่งฟอร์มสั่งซื้อไป Google Sheet
 function submitOrder(e) {
   e.preventDefault();
   const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  if(cart.length === 0) return alert("ตะกร้าสินค้าว่างเปล่า");
+  if(cart.length === 0) return alert("ตะกร้าสินค้าว่างเปล่า กรุณาเลือกส้มตำก่อนครับ");
 
   const submitBtn = document.getElementById("submit-btn");
   submitBtn.disabled = true;
   submitBtn.innerText = "กำลังส่งข้อมูล...";
 
-  const itemsString = cart.map(i => `${i.name}[${i.spicy}|${i.noodle}|ท็อปปิ้ง:${i.toppings}]`).join(", ");
+  const itemsString = cart.map(i => `${i.name} [ความเผ็ด:${i.spicy} | เส้น:${i.noodle} | ท็อปปิ้ง:${i.toppings}]`).join("\n");
   const grandTotal = document.getElementById("grand-total").innerText;
 
-  const slipInput = document.getElementById("slip").files[0];
-  const slipName = slipInput ? slipInput.name : "ไม่มีแนบสลิป";
+  const slipInput = document.getElementById("slip");
+  const slipName = (slipInput && slipInput.files[0]) ? slipInput.files[0].name : "ไม่มีแนบสลิป";
 
   const payload = {
     customerName: document.getElementById("name").value,
@@ -127,7 +155,9 @@ function submitOrder(e) {
     window.location.href = "thankyou.html";
   })
   .catch(err => {
-    alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+    console.error("Error submitting order:", err);
+    alert("เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง");
     submitBtn.disabled = false;
+    submitBtn.innerText = "ยืนยันการสั่งซื้อ 🌶️";
   });
 }

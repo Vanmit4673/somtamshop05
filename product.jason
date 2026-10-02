@@ -1,221 +1,55 @@
-// ⚠️ นำ Web App URL จาก Google Apps Script ของคุณมาวางตรงนี้
-const GOOGLE_SCRIPT_URL = "นำ_WEB_APP_URL_มาวางตรงนี้";
-
-// ข้อมูลสินค้าฝังในไฟล์โดยตรง เพื่อตัดปัญหาการโดนเบราว์เซอร์บล็อกการดึงไฟล์บน file:///
-const productsData = [
+[
   {
     "id": 1,
     "name": "ตำปูปลาร้า",
     "price": 60,
-    "image": "https://ibb.co/ynXtJVH7",
+    "image": "images/tum-poo-plara.jpg",
     "description": "ปลาร้าต้มสุกหอมนัว นัวถึงใจ สูตรเด็ดประจำร้าน",
-    "spicyLevels": ["ไม่เผ็ด", "เผ็ดปกติ", "เผ็ดมาก"],
-    "noodleTypes": ["ไม่ใส่เส้น", "เส้นขนมจีน (+10 บ.)"],
+    "spicyLevels": ["ไม่เผ็ด (พริก 0 เม็ด)", "เผ็ดน้อย (พริก 1-2 เม็ด)", "เผ็ดปกติ (พริก 3-5 เม็ด)", "เผ็ดมาก (พริก 10 เม็ดขึ้นไป)"],
+    "noodleTypes": ["ไม่รับเส้นเพิ่ม", "เพิ่มเส้นขนมจีน (+10 บ.)", "เพิ่มเส้นมาม่า (+15 บ.)"],
     "toppings": [
-      {"name": "หอยเชอร์รี่", "price": 20},
-      {"name": "กากหมู", "price": 15}
+      {"name": "แคบหมูกรอบ", "price": 15},
+      {"name": "หมูยออุบล", "price": 20},
+      {"name": "ไข่เค็ม", "price": 15}
     ]
   },
   {
     "id": 2,
     "name": "ตำไทย",
     "price": 55,
-    "image": "https://ibb.co/rKJJpVc5",
+    "image": "images/tum-thai.jpg",
     "description": "กุ้งแห้งตัวโต ถั่วลิสงคั่วใหม่ รสเปรี้ยวหวานกลมกล่อม",
-    "spicyLevels": ["ไม่เผ็ด", "เผ็ดปกติ", "เผ็ดมาก"],
-    "noodleTypes": ["ไม่ใส่เส้น", "เส้นขนมจีน (+10 บ.)"],
+    "spicyLevels": ["ไม่เผ็ด", "เผ็ดน้อย", "เผ็ดปกติ", "เผ็ดมาก"],
+    "noodleTypes": ["ไม่รับเส้นเพิ่ม", "เพิ่มเส้นขนมจีน (+10 บ.)"],
     "toppings": [
-      {"name": "หอยเชอร์รี่", "price": 20},
-      {"name": "กากหมู", "price": 15}
+      {"name": "แคบหมูกรอบ", "price": 15},
+      {"name": "ไข่เค็ม", "price": 15}
     ]
   },
   {
     "id": 3,
     "name": "ตำซั่ว",
     "price": 65,
-    "image": "https://ibb.co/nNhMk4Dp",
-    "description": "ตำปลาร้านัวๆ ใส่เส้นขนมจีนนุ่มๆ โรยกากหมูกรอบๆ",
-    "spicyLevels": ["ไม่เผ็ด", "เผ็ดปกติ", "เผ็ดมาก"],
-    "noodleTypes": ["เส้นขนมจีน", "ไม่ใส่เส้น"],
+    "image": "images/tum-sua.jpg",
+    "description": "ตำปลาร้านัวๆ ใส่เส้นขนมจีนนุ่มๆ โรยแคบหมูกรอบๆ",
+    "spicyLevels": ["เผ็ดน้อย", "เผ็ดปกติ", "เผ็ดมาก"],
+    "noodleTypes": ["ใส่ขนมจีนปกติ"],
     "toppings": [
-      {"name": "หอยเชอร์รี่", "price": 20},
-      {"name": "กากหมู", "price": 15}
+      {"name": "แคบหมูกรอบพิเศษ", "price": 15},
+      {"name": "หมูยออุบล", "price": 20}
     ]
   },
   {
     "id": 4,
     "name": "ตำป่า",
     "price": 80,
-    "image": "https://ibb.co/bgPzHrK4",
-    "description": "เครื่องแน่น จัดเต็มทั้งหมูยอ หน่อไม้ หอยเชอร์รี่ กากหมู",
-    "spicyLevels": ["ไม่เผ็ด", "เผ็ดปกติ", "เผ็ดมาก"],
-    "noodleTypes": ["เส้นขนมจีน", "ไม่ใส่เส้น"],
+    "image": "images/tum-pa.jpg",
+    "description": "เครื่องแน่น จัดเต็มทั้งหมูยอ หน่อไม้ หอยเชอรี่ เม็ดกระถิน",
+    "spicyLevels": ["เผ็ดปกติ", "เผ็ดมาก"],
+    "noodleTypes": ["ใส่ขนมจีนปกติ"],
     "toppings": [
-      {"name": "หอยเชอร์รี่", "price": 20},
-      {"name": "กากหมู", "price": 15}
+      {"name": "เพิ่มหมูยอ", "price": 20},
+      {"name": "เพิ่มหอยเชอรี่", "price": 20}
     ]
   }
-];
-
-// โหลดเมนูไฮไลท์หน้าแรก (index.html)
-function loadIndexMenu() {
-  const container = document.getElementById("highlight-menu");
-  if(!container) return;
-  
-  container.innerHTML = productsData.map(item => `
-    <div class="card">
-      <img src="${item.image}" alt="${item.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/250x180?text=${encodeURIComponent(item.name)}';">
-      <h3>${item.name}</h3>
-      <p>${item.description}</p>
-      <div class="price">${item.price} บาท</div>
-      <a href="product.html?id=${item.id}" class="btn">สั่งเลือกระดับความแซ่บ 🌶️</a>
-    </div>
-  `).join('');
-}
-
-// โหลดรายละเอียดเมนูและตัวเลือก (product.html)
-function loadProductDetail() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const productId = parseInt(urlParams.get('id')) || 1;
-
-  const item = productsData.find(p => p.id === productId);
-  if(!item) return;
-
-  const imgElem = document.getElementById("p-image");
-  if(imgElem) {
-    imgElem.src = item.image;
-    imgElem.onerror = function() {
-      this.src = `https://via.placeholder.com/500x300?text=${encodeURIComponent(item.name)}`;
-    };
-  }
-
-  if(document.getElementById("p-name")) document.getElementById("p-name").innerText = item.name;
-  if(document.getElementById("p-desc")) document.getElementById("p-desc").innerText = item.description;
-  if(document.getElementById("p-price")) document.getElementById("p-price").innerText = item.price;
-
-  // ตัวเลือกระดับความเผ็ด 3 ระดับ
-  if(document.getElementById("p-spicy")) {
-    document.getElementById("p-spicy").innerHTML = item.spicyLevels.map(s => `<option value="${s}">${s}</option>`).join('');
-  }
-  
-  // ตัวเลือกเส้น
-  if(document.getElementById("p-noodle")) {
-    document.getElementById("p-noodle").innerHTML = item.noodleTypes.map(n => `<option value="${n}">${n}</option>`).join('');
-  }
-  
-  // ท็อปปิ้งพิเศษ
-  if(document.getElementById("p-toppings")) {
-    document.getElementById("p-toppings").innerHTML = item.toppings.map(t => `
-      <label style="display:block; margin: 8px 0; font-size: 1rem;">
-        <input type="checkbox" class="topping-cb" value="${t.name}" data-price="${t.price}"> 
-        ${t.name} (+${t.price} บาท)
-      </label>
-    `).join('');
-  }
-
-  const addBtn = document.getElementById("add-to-cart-btn");
-  if(addBtn) {
-    addBtn.onclick = () => addToCart(item);
-  }
-}
-
-// เพิ่มสินค้าลงตะกร้า
-function addToCart(item) {
-  const spicy = document.getElementById("p-spicy").value;
-  const noodle = document.getElementById("p-noodle").value;
-  
-  let extraPrice = 0;
-  let selectedToppings = [];
-  
-  document.querySelectorAll('.topping-cb:checked').forEach(cb => {
-    selectedToppings.push(cb.value);
-    extraPrice += parseInt(cb.getAttribute('data-price'));
-  });
-
-  if(noodle.includes("+10")) extraPrice += 10;
-
-  const orderItem = {
-    name: item.name,
-    spicy: spicy,
-    noodle: noodle,
-    toppings: selectedToppings.length > 0 ? selectedToppings.join(', ') : 'ไม่ใส่ท็อปปิ้งเพิ่ม',
-    totalPrice: item.price + extraPrice
-  };
-
-  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  cart.push(orderItem);
-  localStorage.setItem("cart", JSON.stringify(cart));
-
-  alert("เพิ่มลงตะกร้าเรียบร้อย!");
-  window.location.href = "order.html";
-}
-
-// สรุปออเดอร์หน้าสั่งซื้อ (order.html)
-function loadOrderSummary() {
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  const listContainer = document.getElementById("cart-items");
-  if(!listContainer) return;
-
-  if(cart.length === 0) {
-    listContainer.innerHTML = "<p>ยังไม่มีรายการในตะกร้า</p>";
-    return;
-  }
-
-  let total = 0;
-  listContainer.innerHTML = cart.map((item, i) => {
-    total += item.totalPrice;
-    return `
-      <div style="padding:10px 0; border-bottom:1px solid #eee;">
-        <b>${i+1}. ${item.name}</b><br>
-        <small>ระดับความเผ็ด: ${item.spicy} | เส้น: ${item.noodle}</small><br>
-        <small>ท็อปปิ้ง: ${item.toppings}</small><br>
-        <span style="color:#e67e22; font-weight:bold;">ราคา: ${item.totalPrice} บาท</span>
-      </div>
-    `;
-  }).join('');
-
-  document.getElementById("grand-total").innerText = total;
-}
-
-// ส่งฟอร์มสั่งซื้อไป Google Sheet
-function submitOrder(e) {
-  e.preventDefault();
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  if(cart.length === 0) return alert("ตะกร้าสินค้าว่างเปล่า กรุณาเลือกส้มตำก่อนครับ");
-
-  const submitBtn = document.getElementById("submit-btn");
-  submitBtn.disabled = true;
-  submitBtn.innerText = "กำลังส่งข้อมูล...";
-
-  const itemsString = cart.map(i => `${i.name} [ความเผ็ด:${i.spicy} | เส้น:${i.noodle} | ท็อปปิ้ง:${i.toppings}]`).join("\n");
-  const grandTotal = document.getElementById("grand-total").innerText;
-
-  const slipInput = document.getElementById("slip");
-  const slipName = (slipInput && slipInput.files[0]) ? slipInput.files[0].name : "ไม่มีแนบสลิป";
-
-  const payload = {
-    customerName: document.getElementById("name").value,
-    contact: document.getElementById("phone").value,
-    address: document.getElementById("address").value,
-    items: itemsString,
-    total: grandTotal,
-    note: document.getElementById("note").value,
-    slipUrl: slipName
-  };
-
-  fetch(GOOGLE_SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify(payload)
-  })
-  .then(() => {
-    localStorage.setItem("lastOrder", JSON.stringify({ ...payload, itemsList: cart }));
-    localStorage.removeItem("cart");
-    window.location.href = "thankyou.html";
-  })
-  .catch(err => {
-    console.error("Error submitting order:", err);
-    alert("เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง");
-    submitBtn.disabled = false;
-    submitBtn.innerText = "ยืนยันการสั่งซื้อ 🌶️";
-  });
-}
+]

@@ -1,4 +1,4 @@
-const GOOGLE_SCRIPT_URL = "https://docs.google.com/spreadsheets/d/1APjcgWaUMoJhNFFfeput27T3MWn8ZJHgMo24vZoRU6g/edit?gid=0#gid=0";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyYu4b9c-ORJYTSBLfSF0xbO0dFtAPL1g_lN2TdJKqunww9CIoFHJF9gyQUsKmdZLGz/exec";
 
 function loadIndexMenu() {
   fetch("products.json")

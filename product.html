@@ -2,39 +2,106 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>ระบุรายละเอียดส้มตำ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบุรายละเอียดส้มตำ - ร้านตำนัว แซ่บนคร</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* สไตล์เพิ่มเติมสำหรับหน้าระบุเครื่องส้มตำ */
+    .product-card {
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .product-img {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .option-title {
+      font-weight: bold;
+      color: #d35400;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    .topping-item {
+      background: #fdf8f2;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #f0e2d0;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .topping-item input {
+      width: auto;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 <body>
-  <header><h1>🌶️ ระบุเครื่องส้มตำ</h1></header>
-  <nav><a href="index.html">กลับหน้าแรก</a></nav>
 
-  <div class="container" style="background:white; padding:20px; border-radius:12px;">
-    <img id="p-image" src="" style="width:100%; max-height:300px; object-fit:cover; border-radius:8px;">
-    <h2 id="p-name"></h2>
-    <p id="p-desc" style="color:#666;"></p>
-    <h3 class="price">ราคาเริ่มต้น <span id="p-price"></span> บาท</h3>
-    <hr><br>
+  <header>
+    <h1>🌶️ ระบุเครื่องส้มตำ</h1>
+  </header>
 
-    <div class="form-group">
-      <label>1. เลือกระดับความแซ่บ:</label>
-      <select id="p-spicy"></select>
+  <nav>
+    <a href="index.html">← กลับหน้าแรก</a>
+    <a href="order.html">🛒 ตะกร้าสินค้า</a>
+  </nav>
+
+  <div class="container">
+    <div class="product-card">
+      <!-- รูปภาพและรายละเอียดส้มตำ -->
+      <img id="p-image" class="product-img" src="" alt="รูปส้มตำ">
+      <h2 id="p-name" style="margin-top:15px; color:#333;">กำลังโหลด...</h2>
+      <p id="p-desc" style="color:#666; margin: 8px 0; font-size:0.95rem;"></p>
+      <h3 class="price">ราคาเริ่มต้น <span id="p-price">0</span> บาท</h3>
+      
+      <hr style="border:0; border-top:1px dashed #ddd; margin:20px 0;">
+
+      <!-- 1. ระดับความแซ่บ (3 ระดับ) -->
+      <div class="form-group">
+        <label class="option-title">1. เลือกระดับความแซ่บ 🌶️</label>
+        <select id="p-spicy">
+          <!-- ดึงตัวเลือกจาก script.js -->
+        </select>
+      </div>
+
+      <!-- 2. ตัวเลือกเส้น -->
+      <div class="form-group">
+        <label class="option-title">2. เลือกเส้น 🍜</label>
+        <select id="p-noodle">
+          <!-- ดึงตัวเลือกจาก script.js -->
+        </select>
+      </div>
+
+      <!-- 3. ท็อปปิ้งพิเศษ -->
+      <div class="form-group">
+        <label class="option-title">3. เพิ่มท็อปปิ้งพิเศษ ✨</label>
+        <div id="p-toppings">
+          <!-- ดึงท็อปปิ้งจาก script.js -->
+        </div>
+      </div>
+
+      <!-- ปุ่มใส่ตะกร้า -->
+      <button id="add-to-cart-btn" class="btn" style="width:100%; font-size:1.1rem; padding:15px; margin-top:20px;">
+        ใส่ตะกร้าและไปชำระเงิน 🛒
+      </button>
     </div>
-
-    <div class="form-group">
-      <label>2. เลือกตัวเลือกเส้น:</label>
-      <select id="p-noodle"></select>
-    </div>
-
-    <div class="form-group">
-      <label>3. เพิ่มท็อปปิ้งพิเศษ:</label>
-      <div id="p-toppings"></div>
-    </div>
-
-    <button id="add-to-cart-btn" class="btn" style="width:100%;">ใส่ตะกร้าและไปชำระเงิน 🛒</button>
   </div>
 
   <script src="script.js"></script>
-  <script>loadProductDetail();</script>
+  <script>
+    // เรียกทำงานเมื่อเปิดหน้า product.html
+    document.addEventListener("DOMContentLoaded", () => {
+      loadProductDetail();
+    });
+  </script>
 </body>
 </html>
